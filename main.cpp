@@ -27,3 +27,28 @@ struct Nodo {
     Nodo* siguiente;
     Nodo* anterior;
 };
+
+
+class ListaContactos {
+private:
+    Nodo* cabeza;
+public:
+    ListaContactos() : cabeza(nullptr) {}
+//5)Mostrar contactos
+void mostrarContactos() {
+        Nodo* actual = cabeza;
+        while (actual) {
+            cout << "Nombre: " << actual->data.nombre << endl;
+            cout << "Apellidos: " << actual->data.apellidos << endl;
+            cout << "Correo: " << actual->data.correo << endl;
+            cout << "Celular: " << actual->data.celular << endl;
+            cout << "Fecha de Nacimiento: " << actual->data.fechaNacimiento << endl;
+            cout << "-----------------------------------" << endl;
+            actual = actual->siguiente;
+        }
+    }
+
+
+
+
+}
