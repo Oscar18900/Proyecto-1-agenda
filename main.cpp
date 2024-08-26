@@ -47,7 +47,7 @@ void mostrarContactos() {
             actual = actual->siguiente;
         }
     }
-
+}
 
 
 
