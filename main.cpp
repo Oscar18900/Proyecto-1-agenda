@@ -12,6 +12,8 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <limits> 
+
 using namespace std;
 
 struct Contacto {
@@ -32,10 +34,17 @@ struct Nodo {
 class ListaContactos {
 private:
     Nodo* cabeza;
+    
+	//Para que cada vez que se ingrese las palabras en mayusculas a minisculas 
+    string toLowerCase(const string& str) {
+        string lowerStr = str;
+        transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), ::tolower);
+        return lowerStr;
+    }
+
 public:
     ListaContactos() : cabeza(nullptr) {}
-    
-    // 5) MOSTRAR CONTACTO
+
     void mostrarContactos() {
         Nodo* actual = cabeza;
         while (actual) {
@@ -51,13 +60,13 @@ public:
     }
 
     void insertarOrdenado(Nodo* nuevoNodo) {
-        if (!cabeza || nuevoNodo->data.nombre < cabeza->data.nombre) {
+        if (!cabeza || toLowerCase(nuevoNodo->data.nombre) < toLowerCase(cabeza->data.nombre)) {
             nuevoNodo->siguiente = cabeza;
             if (cabeza) cabeza->anterior = nuevoNodo;
             cabeza = nuevoNodo;
         } else {
             Nodo* actual = cabeza;
-            while (actual->siguiente && actual->siguiente->data.nombre < nuevoNodo->data.nombre) {
+            while (actual->siguiente && toLowerCase(actual->siguiente->data.nombre) < toLowerCase(nuevoNodo->data.nombre)) {
                 actual = actual->siguiente;
             }
             nuevoNodo->siguiente = actual->siguiente;
@@ -67,12 +76,61 @@ public:
         }
     }
 
-
     void agregarContacto(const Contacto& nuevoContacto) {
         Nodo* nuevoNodo = new Nodo{nuevoContacto, nullptr, nullptr};
         insertarOrdenado(nuevoNodo);
     }
+
+    Nodo* buscarContacto(const string& nombre) {
+        Nodo* actual = cabeza;
+        string nombreLower = toLowerCase(nombre);
+        while (actual && toLowerCase(actual->data.nombre) != nombreLower) {
+            actual = actual->siguiente;
+        }
+        return actual;
+    }
+
+    void editarContacto(const string& nombre) {
+        Nodo* contacto = buscarContacto(nombre);
+        if (contacto) {
+            cout << "Ingrese nuevo nombre: ";
+            getline(cin, contacto->data.nombre);
+            cout << "Ingrese nuevo apellido Paterno: ";
+            getline(cin, contacto->data.apellidoP);
+            cout << "Ingrese nuevo apellido Materno: ";
+            getline(cin, contacto->data.apellidoM);
+            cout << "Ingrese nuevo correo: ";
+            getline(cin, contacto->data.correo);
+            cout << "Ingrese nuevo celular: ";
+            getline(cin, contacto->data.celular);
+            cout << "Ingrese nueva fecha de nacimiento: ";
+            getline(cin, contacto->data.fechaNacimiento);
+
+            // Reordenar la lista si el nombre ha cambiado
+            if (contacto->anterior) contacto->anterior->siguiente = contacto->siguiente;
+            if (contacto->siguiente) contacto->siguiente->anterior = contacto->anterior;
+            if (contacto == cabeza) cabeza = contacto->siguiente;
+
+            insertarOrdenado(contacto);
+        } else {
+            cout << "Contacto no encontrado." << endl;
+        }
+    }
 }; 
+
+void borrarContacto(const string& nombre) {
+    Nodo* contacto = buscarContacto(nombre);
+    if (contacto) {
+        if (contacto->anterior) contacto->anterior->siguiente = contacto->siguiente;
+        if (contacto->siguiente) contacto->siguiente->anterior = contacto->anterior;
+        if (contacto == cabeza) cabeza = contacto->siguiente;
+        delete contacto;
+        cout << "Contacto eliminado." << endl;
+    } else {
+        cout << "Contacto no encontrado." << endl;
+    }
+}
+
 
 int main() {
     ListaContactos lista;
@@ -89,6 +147,15 @@ int main() {
         cout << "7. Salir\n";
         cout << "Seleccione una opcion: ";
         cin >> opc;
+
+        // Validar entrada
+        if (cin.fail()) {
+            cin.clear(); // Limpiar el estado de error
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Descartar la entrada inválida
+            cout << "Entrada invalida. Por favor, ingrese un numero." << endl;
+            continue;
+        }
+
         cin.ignore(); // Ignorar el salto de línea residual
 
         switch (opc) {
@@ -115,14 +182,36 @@ int main() {
         case 3:
             lista.mostrarContactos(); 
             break;
-        case 4:
-            // Implementar buscar contacto por nombre
+        case 4: {
+            string nombre;
+            cout << "Ingrese el nombre del contacto a buscar: ";
+            getline(cin, nombre);
+            Nodo* contacto = lista.buscarContacto(nombre);
+            if (contacto) {
+                cout << "Contacto encontrado:\n";
+                cout << "Nombre: " << contacto->data.nombre << endl;
+                cout << "Apellido Paterno: " << contacto->data.apellidoP << endl;
+                cout << "Apellido Materno: " << contacto->data.apellidoM << endl;
+                cout << "Correo: " << contacto->data.correo << endl;
+                cout << "Celular: " << contacto->data.celular << endl;
+                cout << "Fecha de Nacimiento: " << contacto->data.fechaNacimiento << endl;
+            } else {
+                cout << "Contacto no encontrado." << endl;
+            }
             break;
-        case 5:
-            // Implementar editar contacto
+        }
+        case 5: {
+            string nombre;
+            cout << "Ingrese el nombre del contacto a editar: ";
+            getline(cin, nombre);
+            lista.editarContacto(nombre);
             break;
+        }
         case 6:
-            // Implementar borrar contacto
+            string nombre;
+			cout << "Ingrese el nombre del contacto a borrar: ";
+			getline(cin, nombre);
+			lista.borrarContacto(nombre);
             break;
         }
     } while (opc != 7); 
