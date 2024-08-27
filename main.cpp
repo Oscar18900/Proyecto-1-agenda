@@ -34,8 +34,8 @@ private:
     Nodo* cabeza;
 public:
     ListaContactos() : cabeza(nullptr) {}
-
-    // 5) Mostrar contactos
+    
+    // 5) MOSTRAR CONTACTO
     void mostrarContactos() {
         Nodo* actual = cabeza;
         while (actual) {
@@ -67,6 +67,7 @@ public:
         }
     }
 
+
     void agregarContacto(const Contacto& nuevoContacto) {
         Nodo* nuevoNodo = new Nodo{nuevoContacto, nullptr, nullptr};
         insertarOrdenado(nuevoNodo);
@@ -88,46 +89,43 @@ int main() {
         cout << "7. Salir\n";
         cout << "Seleccione una opcion: ";
         cin >> opc;
+        cin.ignore(); // Ignorar el salto de línea residual
 
         switch (opc) {
         case 1: {
             Contacto nuevoContacto;
             cout << "Ingrese nombre: ";
-            cin >> nuevoContacto.nombre;
+            getline(cin, nuevoContacto.nombre);
             cout << "Ingrese apellido Paterno: ";
-            cin >> nuevoContacto.apellidoP;
+            getline(cin, nuevoContacto.apellidoP);
             cout << "Ingrese apellido Materno: ";
-            cin >> nuevoContacto.apellidoM;
+            getline(cin, nuevoContacto.apellidoM);
             cout << "Ingrese correo: ";
-            cin >> nuevoContacto.correo;
+            getline(cin, nuevoContacto.correo);
             cout << "Ingrese celular: ";
-            cin >> nuevoContacto.celular;
+            getline(cin, nuevoContacto.celular);
             cout << "Ingrese fecha de nacimiento: ";
-            cin >> nuevoContacto.fechaNacimiento;
+            getline(cin, nuevoContacto.fechaNacimiento);
             lista.agregarContacto(nuevoContacto);
             break;
         }
         case 2:
-            
+            // Implementar reordenar por apellido
             break;
         case 3:
             lista.mostrarContactos(); 
             break;
         case 4:
-          
+            // Implementar buscar contacto por nombre
             break;
         case 5:
-          
+            // Implementar editar contacto
             break;
         case 6:
-         
+            // Implementar borrar contacto
             break;
         }
     } while (opc != 7); 
 
     return 0;
 }
-
-
-
-
