@@ -129,6 +129,60 @@ public:
         cout << "Contacto no encontrado." << endl;
     }
 }
+void reordenarPorApellido() {
+    if (!cabeza || !cabeza->siguiente) {
+        // No hay necesidad de reordenar si la lista está vacía o solo tiene un nodo
+        return;
+    }
+
+    Nodo* nuevaCabeza = nullptr;
+
+    Nodo* actual = cabeza;
+    while (actual) {
+        Nodo* siguiente = actual->siguiente;
+        actual->siguiente = nullptr;
+        actual->anterior = nullptr;
+
+        
+        if (!nuevaCabeza) {
+            nuevaCabeza = actual;
+        } else {
+            Nodo* temp = nuevaCabeza;
+            while (temp) {
+                
+                if (toLowerCase(actual->data.apellidoP) < toLowerCase(temp->data.apellidoP) || 
+                    (toLowerCase(actual->data.apellidoP) == toLowerCase(temp->data.apellidoP) &&
+                     toLowerCase(actual->data.apellidoM) < toLowerCase(temp->data.apellidoM)) ||
+                    (toLowerCase(actual->data.apellidoP) == toLowerCase(temp->data.apellidoP) &&
+                     toLowerCase(actual->data.apellidoM) == toLowerCase(temp->data.apellidoM) &&
+                     toLowerCase(actual->data.nombre) < toLowerCase(temp->data.nombre))) {
+
+                    if (temp == nuevaCabeza) {
+                        actual->siguiente = nuevaCabeza;
+                        nuevaCabeza->anterior = actual;
+                        nuevaCabeza = actual;
+                    } else {
+                        actual->siguiente = temp;
+                        actual->anterior = temp->anterior;
+                        temp->anterior->siguiente = actual;
+                        temp->anterior = actual;
+                    }
+                    break;
+                }
+                if (!temp->siguiente) {
+                    temp->siguiente = actual;
+                    actual->anterior = temp;
+                    break;
+                }
+                temp = temp->siguiente;
+            }
+        }
+        actual = siguiente;
+    }
+
+    cabeza = nuevaCabeza;
+}
+
 }; 
 
 
@@ -177,7 +231,8 @@ int main() {
             break;
         }
         case 2:
-            // Implementar reordenar por apellido
+            lista.reordenarPorApellido();
+            cout << "Contactos reordenados por apellido." << endl;
             break;
         case 3:
             lista.mostrarContactos(); 
