@@ -116,9 +116,8 @@ public:
             cout << "Contacto no encontrado." << endl;
         }
     }
-}; 
-
-void borrarContacto(const string& nombre) {
+    
+    void borrarContacto(const string& nombre) {
     Nodo* contacto = buscarContacto(nombre);
     if (contacto) {
         if (contacto->anterior) contacto->anterior->siguiente = contacto->siguiente;
@@ -130,6 +129,7 @@ void borrarContacto(const string& nombre) {
         cout << "Contacto no encontrado." << endl;
     }
 }
+}; 
 
 
 int main() {
